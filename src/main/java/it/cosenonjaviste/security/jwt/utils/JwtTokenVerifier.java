@@ -16,19 +16,19 @@ import com.auth0.jwt.JWTVerifyException;
 
 /**
  * Helper class for simplifying token verification procedure.
- * 
+ *
  * This class provides convenience methods to access <tt>userId</tt> and <tt>roles</tt> claims values.
  * If not present, an {@link IllegalStateException} is thrown
- * 
+ *
  * These values are mandatory in order to create {@link UserPrincipal} for each request
- * 
+ *
  * @author acomo
  *
  */
 public class JwtTokenVerifier {
-	
+
 	private static final Log LOG = LogFactory.getLog(JwtTokenVerifier.class);
-	
+
 	private JWTVerifier verifier;
 
 	private Map<String, Object> claims;
@@ -36,26 +36,26 @@ public class JwtTokenVerifier {
 	private JwtTokenVerifier() {
 
 	}
-	
+
 	/**
 	 * Creates a new instance of {@link JwtTokenVerifier} class
-	 * 
+	 *
 	 * @param secret secret phrase
-	 * 
+	 *
 	 * @return a new instance of {@link JwtTokenVerifier} class
 	 */
 	public static JwtTokenVerifier create(String secret) {
 		JwtTokenVerifier tokenVerifier = new JwtTokenVerifier();
-		tokenVerifier.verifier = new JWTVerifier(secret); 
-		
+		tokenVerifier.verifier = new JWTVerifier(secret);
+
 		return tokenVerifier;
 	}
-	
+
 	/**
 	 * Verify provided token delegating verification logic to {@link JWTVerifier#verify(String)}
-	 * 
+	 *
 	 * @param token JWT token
-	 * 
+	 *
 	 * @return verification status
 	 */
 	public boolean verify(String token) {
@@ -75,12 +75,12 @@ public class JwtTokenVerifier {
 			return false;
 		}
 	}
-	
+
 	/**
 	 * Convenience method to retrieve <tt>userId</tt> value from token claim
-	 * 
+	 *
 	 * @return <tt>userId</tt> value
-	 * 
+	 *
 	 * @throws IllegalStateException if claims do not contain <tt>userId</tt> key
 	 */
 	public String getUserId() {
@@ -90,12 +90,27 @@ public class JwtTokenVerifier {
 			throw new IllegalStateException("Please call verify method first!");
 		}
 	}
-	
+
+	/**
+	 * Convenience method to retrieve <tt>OIN</tt> value from token claim
+	 *
+	 * @return <tt>OIN</tt> value
+	 *
+	 * @throws IllegalStateException if claims do not contain <tt>OIN</tt> key
+	 */
+	public String getOIN() {
+		if (this.claims != null) {
+			return (String) this.claims.get(JwtConstants.OIN_ID);
+		} else {
+			throw new IllegalStateException("Please call verify method first!");
+		}
+	}
+
 	/**
 	 * Convenience method to retrieve <tt>roles</tt> value from token claim
-	 * 
+	 *
 	 * @return <tt>roles</tt> value collection
-	 * 
+	 *
 	 * @throws IllegalStateException if claims do not contain <tt>roles</tt> key
 	 */
 	@SuppressWarnings("unchecked")
@@ -106,10 +121,10 @@ public class JwtTokenVerifier {
 			throw new IllegalStateException("Please call verify method first!");
 		}
 	}
-	
+
 	/**
 	 * Return validated claims. For internal use only!
-	 * 
+	 *
 	 * @return
 	 */
 	Map<String, Object> getClaims() {

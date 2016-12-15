@@ -20,26 +20,26 @@ import org.apache.catalina.valves.ValveBase;
 
 /**
  * Perform a JWT authentication on requester resource.
- * 
+ *
  * Expected a JWT token containing two additional claims over standard ones:
  * <ul>
  * 	<li><em>userId</em>: username authenticated by realm system</li>
  * 	<li><em>roles</em>: realm roles associated to username</li>
  * </ul>
- * 
+ *
  * A new {@link UserPrincipal} will be created upon <tt>userId</tt> and <tt>roles</tt> values: no need to authenticate each request, user status is provided by JWT token!
  * <br>
  * Expected header for JWT token is <strong><tt>X-Auth</tt></strong>
- * 
+ *
  * @author acomo
  *
  */
 public class JwtTokenValve extends ValveBase {
 
 	private String secret;
-	
+
 	private boolean updateExpire;
-	
+
 	@Override
 	public void invoke(Request request, Response response) throws IOException,
 			ServletException {
@@ -49,7 +49,7 @@ public class JwtTokenValve extends ValveBase {
 
 		if ((constraints == null && !request.getContext().getPreemptiveAuthentication())
 				|| !hasAuthContraint(constraints)) {
-			this.getNext().invoke(request, response); 
+			this.getNext().invoke(request, response);
 		} else {
 			handleAuthentication(request, response);
 		}
@@ -73,6 +73,8 @@ public class JwtTokenValve extends ValveBase {
 			if (tokenVerifier.verify(token)) {
 				request.setUserPrincipal(createPrincipalFromToken(tokenVerifier));
 				request.setAuthType("TOKEN");
+				request.setAttribute("OIN", tokenVerifier.getOIN());
+
 				if (this.updateExpire) {
 					updateToken(tokenVerifier, response);
 				}
@@ -101,10 +103,10 @@ public class JwtTokenValve extends ValveBase {
 	public void setSecret(String secret) {
 		this.secret = secret;
 	}
-	
+
 	/**
 	 * Updates expire time on each request
-	 * 
+	 *
 	 * @param updateExpire
 	 */
 	public void setUpdateExpire(boolean updateExpire) {
