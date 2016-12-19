@@ -14,9 +14,9 @@ public class JwtConstants {
 	public static final String AUTH_HEADER = "Authorization";
 
 	/**
-	 * User Id claim key
+	 * subject claim key
 	 */
-	public static final String USER_ID = "userId";
+	public static final String SUB = "sub";
 
 	/**
 	 * OIN Id
@@ -26,6 +26,6 @@ public class JwtConstants {
 	/**
 	 * Roles claim key
 	 */
-	public static final String ROLES = "roles";
+	public static final String ROLES = "http://data.digitaalstelselomgevingswet.nl/definities/Role";
 
 }

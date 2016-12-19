@@ -27,7 +27,7 @@ import org.apache.catalina.valves.ValveBase;
  * 	<li><em>roles</em>: realm roles associated to username</li>
  * </ul>
  *
- * A new {@link UserPrincipal} will be created upon <tt>userId</tt> and <tt>roles</tt> values: no need to authenticate each request, user status is provided by JWT token!
+ * A new {@link UserPrincipal} will be created upon <tt>sub</tt> and <tt>roles</tt> values: no need to authenticate each request, user status is provided by JWT token!
  * <br>
  * Expected header for JWT token is <strong><tt>X-Auth</tt></strong>
  *
@@ -80,10 +80,10 @@ public class JwtTokenValve extends ValveBase {
 				}
 				this.getNext().invoke(request, response);
 			} else {
-				sendUnauthorizedError(request, response, "Token not valid. Please login first");
+				sendUnauthorizedError(request, response, "JWT token not valid. Please provide valid token.");
 			}
 		} else {
-			sendUnauthorizedError(request, response, "Please login first");
+			sendUnauthorizedError(request, response, "JWT token not found. Please provide JWT token.");
 		}
 	}
 
@@ -93,7 +93,7 @@ public class JwtTokenValve extends ValveBase {
 	}
 
 	private GenericPrincipal createPrincipalFromToken(JwtTokenVerifier tokenVerifier) {
-		return new GenericPrincipal(tokenVerifier.getUserId(), null, tokenVerifier.getRoles());
+		return new GenericPrincipal(tokenVerifier.getSub(), null, tokenVerifier.getRoles());
 	}
 
 	protected void sendUnauthorizedError(Request request, Response response, String message) throws IOException {

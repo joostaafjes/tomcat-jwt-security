@@ -17,7 +17,7 @@ import com.auth0.jwt.JWTVerifyException;
 /**
  * Helper class for simplifying token verification procedure.
  *
- * This class provides convenience methods to access <tt>userId</tt> and <tt>roles</tt> claims values.
+ * This class provides convenience methods to access <tt>sub</tt> and <tt>roles</tt> claims values.
  * If not present, an {@link IllegalStateException} is thrown
  *
  * These values are mandatory in order to create {@link UserPrincipal} for each request
@@ -77,15 +77,15 @@ public class JwtTokenVerifier {
 	}
 
 	/**
-	 * Convenience method to retrieve <tt>userId</tt> value from token claim
+	 * Convenience method to retrieve <tt>sub</tt> value from token claim
 	 *
-	 * @return <tt>userId</tt> value
+	 * @return <tt>sub</tt> value
 	 *
-	 * @throws IllegalStateException if claims do not contain <tt>userId</tt> key
+	 * @throws IllegalStateException if claims do not contain <tt>sub</tt> key
 	 */
-	public String getUserId() {
+	public String getSub() {
 		if (this.claims != null) {
-			return (String) this.claims.get(JwtConstants.USER_ID);
+			return (String) this.claims.get(JwtConstants.SUB);
 		} else {
 			throw new IllegalStateException("Please call verify method first!");
 		}

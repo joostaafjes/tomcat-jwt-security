@@ -25,7 +25,7 @@ public class JwtTokenBuilderTest {
 
 		assertNotNull(tokenObject);
 		assertEquals(5, tokenObject.size());
-		assertEquals(tokenObject.get(JwtConstants.USER_ID), "test");
+		assertEquals(tokenObject.get(JwtConstants.SUB), "test");
 		assertEquals(tokenObject.get(JwtConstants.ROLES), Arrays.asList("role1, role2"));
 
 		long now = System.currentTimeMillis() / 1000L;
@@ -94,6 +94,6 @@ public class JwtTokenBuilderTest {
 
 	private String createToken() {
 		JwtTokenBuilder builder = JwtTokenBuilder.create(SECRET);
-		return builder.userId("test").roles(Arrays.asList("role1, role2")).expirySecs(10000).notValidBeforeLeeway(5000).build();
+		return builder.sub("test").roles(Arrays.asList("role1, role2")).expirySecs(10000).notValidBeforeLeeway(5000).build();
 	}
 }

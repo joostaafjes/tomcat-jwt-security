@@ -104,7 +104,7 @@ public class JwtTokenValveTest {
 		jwtValve.invoke(request, response);
 
 		verify(request).getHeader(JwtConstants.AUTH_HEADER);
-		verify(response).sendError(401, "Please login first");
+		verify(response).sendError(401, "JWT token not found. Please provide JWT token.");
 	}
 
 	/**
@@ -117,13 +117,13 @@ public class JwtTokenValveTest {
 		when(realm.findSecurityConstraints(request, request.getContext()))
 				.thenReturn(new SecurityConstraint[] { securityConstraint });
 		when(request.getHeader(JwtConstants.AUTH_HEADER)).thenReturn("eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE0NDE1OTI3ODEsInVzZXJJZCI6InRlc3QiLCJyb2xlcyI6WyJyb2xlMSwgcm9sZTIiXX0.ObRZMakmlfdw75VCA8FuyFBpNOSu-x3wea9-_NpYJ9");
-		
+
 		jwtValve.invoke(request, response);
 
 		verify(request).getHeader(JwtConstants.AUTH_HEADER);
-		verify(response).sendError(401, "Token not valid. Please login first");
+		verify(response).sendError(401, "JWT token not valid. Please provide valid token.");
 	}
-	
+
 	/**
 	 * @throws Exception
 	 */
@@ -135,7 +135,7 @@ public class JwtTokenValveTest {
 				.thenReturn(new SecurityConstraint[] { securityConstraint });
 		when(request.getHeader(JwtConstants.AUTH_HEADER)).thenReturn(
 				getTestToken());
-		
+
 		jwtValve.setUpdateExpire(true);
 		jwtValve.invoke(request, response);
 
@@ -143,7 +143,7 @@ public class JwtTokenValveTest {
 	}
 
 	private String getTestToken() {
-		return JwtTokenBuilder.create(SECRET).userId("test")
+		return JwtTokenBuilder.create(SECRET).sub("test")
 				.roles(Arrays.asList("role1, role2")).expirySecs(10000).build();
 	}
 
